@@ -1,0 +1,15 @@
+
+Recopier tous les anciens blocks du projets Maven
+
+Utiliser RxJava
+
+Faire des composants en :
+	- Groovy
+	- Scala
+	- JavaScript
+	- Jython
+	
+Faire un réseau de neurones
+
+
+
