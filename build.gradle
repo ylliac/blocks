@@ -20,6 +20,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.+'
     
     compile group: 'com.google.guava', name: 'guava', version: '15.0'
+    compile group: 'io.reactivex', name: 'rxjava', version: '1.0.0-rc.3'
     
     compile files('libs/javafbp-2.9.jar') 
 }
