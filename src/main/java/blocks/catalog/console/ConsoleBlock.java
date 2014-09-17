@@ -10,17 +10,15 @@ public class ConsoleBlock extends Block {
 		inMessage = new Observer<String>() {
 
 			public void onCompleted() {
-				System.out.println("");
+				System.out.println("-------------------------");
 			}
 
 			public void onError(Throwable e) {
-				System.out.println("");
-				System.out.println(e.getMessage());
+				System.out.println("Error : " + e.getMessage());
 			}
 
-			public void onNext(String t) {
-				System.out.print(t);
-				System.out.print(" ");
+			public void onNext(String message) {
+				System.out.println(message);
 			}
 		};
 	}

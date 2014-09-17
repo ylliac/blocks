@@ -1,4 +1,4 @@
-package blocks.util.variant;
+package blocks.util;
 
 import java.io.File;
 import java.io.FileInputStream;
