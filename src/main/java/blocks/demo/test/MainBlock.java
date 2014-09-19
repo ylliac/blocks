@@ -3,6 +3,7 @@ package blocks.demo.test;
 import rx.Observable;
 import blocks.catalog.chatbot.ChatBotBlock;
 import blocks.catalog.console.ConsoleBlock;
+import blocks.catalog.micro.MicrophoneBlock;
 import blocks.catalog.translate.TranslateBlock;
 import blocks.catalog.tts.TextToSpeechBlock;
 
@@ -13,6 +14,7 @@ public class MainBlock {
 		TranslateBlock translate = new TranslateBlock();
 		TextToSpeechBlock tts = new TextToSpeechBlock();
 		ChatBotBlock chatbot = new ChatBotBlock();
+		MicrophoneBlock micro = new MicrophoneBlock();
 
 		Observable.just("conf/chatbot/brain.rs").subscribe(
 				chatbot.getInConfigurationFile());
@@ -20,5 +22,7 @@ public class MainBlock {
 		translate.getOut().subscribe(chatbot.getIn());
 		translate.getOut().subscribe(tts.getIn());
 		Observable.just("Qui es tu ?").subscribe(translate.getIn());
+		
+		micro.getOut().subscribe();
 	}
 }
