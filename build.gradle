@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 
 description = 'Block collection for JavaFBP'
 
-sourceCompatibility = 1.5
+sourceCompatibility = 1.7
 version = '1.0'
 jar {
     manifest {
@@ -23,13 +23,26 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.+'    
     
     //Reactive
-    compile group: 'io.reactivex', name: 'rxjava', version: '1.0.0-rc.3'
-    
+    compile group: 'com.netflix.rxjava', name: 'rxjava-core', version: '0.20.0'
+    compile group: 'com.github.davidmoten', name: 'rxjava-file', version: '0.2'
+        
     //Player MP3
     compile group: 'javazoom', name: 'jlayer', version: '1.0.1'
     
+    //FLAC Encoder
+    compile files('libs/javaFlacEncoder-0.3.1.jar')
+    
     //Translator
     compile group: 'com.memetix', name: 'microsoft-translator-java-api', version: '0.6.2'
+        
+    //Speech recognition lib dependencies
+    compile group: 'com.googlecode.soundlibs', name: 'tritonus-share', version: '0.3.7-2'
+    compile group: 'com.googlecode.soundlibs', name: 'jlayer', version: '1.0.1-1'
+    compile group: 'com.googlecode.soundlibs', name: 'mp3spi', version: '1.9.5-1'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.3'    
+    
+    //JFreeChart
+    compile group: 'org.jfree', name: 'jfreechart', version: '1.0.14'
 }
 
 test {

@@ -1,8 +1,8 @@
 package blocks.core;
 
-public abstract class Block {
+public abstract class BlockSupport {
 
-	public Block() {
+	public BlockSupport() {
 		initialize();
 	}
 	

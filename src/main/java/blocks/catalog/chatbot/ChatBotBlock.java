@@ -6,9 +6,9 @@ import rx.functions.Func1;
 import rx.observers.EmptyObserver;
 import rx.subjects.PublishSubject;
 import blocks.catalog.chatbot.rivescript.RiveScript;
-import blocks.core.Block;
+import blocks.core.BlockSupport;
 
-public class ChatBotBlock extends Block {
+public class ChatBotBlock extends BlockSupport {
 
 	@Override
 	protected void initialize() {

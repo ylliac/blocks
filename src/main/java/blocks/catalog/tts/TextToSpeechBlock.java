@@ -4,10 +4,10 @@ import javazoom.jl.player.Player;
 import rx.Observer;
 import rx.exceptions.OnErrorThrowable;
 import rx.observers.EmptyObserver;
-import blocks.core.Block;
+import blocks.core.BlockSupport;
 import blocks.util.Language;
 
-public class TextToSpeechBlock extends Block {
+public class TextToSpeechBlock extends BlockSupport {
 
 	@Override
 	protected void initialize() {

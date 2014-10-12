@@ -3,7 +3,6 @@ package blocks.catalog.micro;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -21,15 +20,15 @@ import rx.Observable;
 import rx.Observable.OnSubscribe;
 import rx.Observer;
 import rx.Subscriber;
+import rx.exceptions.OnErrorFailedException;
 import rx.functions.Action0;
 import rx.functions.Func0;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
-import blocks.core.Block;
+import blocks.core.BlockSupport;
 
-public class MicrophoneBlock extends Block {
+public class MicrophoneBlock extends BlockSupport {
 
 	private static final int TIME_AFTER_SPEECH = 2000;
 
@@ -127,8 +126,6 @@ public class MicrophoneBlock extends Block {
 			}
 		};
 
-		// TODO ACY utiliser inTick pour faire un throttle sur le flux ?
-
 		final AudioFormat audioFormat = getAudioFormat();
 		DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class,
 				audioFormat);
@@ -174,66 +171,77 @@ public class MicrophoneBlock extends Block {
 				});
 
 		// Buffer
-		out = filteredAudioFlow.buffer(new Func0<Observable<Integer>>() {
-			public Observable<Integer> call() {
-				return audioFlow.subscribeOn(Schedulers.computation())
-						.map(new Func1<byte[], Integer>() {
-							public Integer call(byte[] audioData) {
-								return calculateRMSLevel(audioData);
-							}
-						}).buffer(1, TimeUnit.SECONDS)
-						.map(new Func1<List<Integer>, Integer>() {
+		out = filteredAudioFlow
+				.buffer(new Func0<Observable<Integer>>() {
+					public Observable<Integer> call() {
+						return audioFlow.subscribeOn(Schedulers.computation())
+								.map(new Func1<byte[], Integer>() {
+									public Integer call(byte[] audioData) {
+										return calculateRMSLevel(audioData);
+									}
+								}).buffer(1, TimeUnit.SECONDS)
+								.map(new Func1<List<Integer>, Integer>() {
 
-							public Integer call(List<Integer> volumes) {
-								int avgVolume = 0;
+									public Integer call(List<Integer> volumes) {
+										int avgVolume = 0;
 
-								for (Integer volume : volumes) {
-									avgVolume += volume;
-								}
-								avgVolume /= (double) volumes.size();
+										for (Integer volume : volumes) {
+											avgVolume += volume;
+										}
+										avgVolume /= (double) volumes.size();
 
-								return avgVolume;
-							}
+										return avgVolume;
+									}
 
-						}).filter(new Func1<Integer, Boolean>() {
-							public Boolean call(Integer avgVolume) {
-								return avgVolume < threshold;
-							}
-						});
-			}
-		}).filter(new Func1<List<byte[]>, Boolean>() {
-			public Boolean call(List<byte[]> list) {
-				return !list.isEmpty();
-			}
-		}).map(new Func1<List<byte[]>, byte[]>() {
-			public byte[] call(List<byte[]> list) {
+								}).filter(new Func1<Integer, Boolean>() {
+									public Boolean call(Integer avgVolume) {
+										return avgVolume < threshold;
+									}
+								});
+					}
+				})
+				.filter(new Func1<List<byte[]>, Boolean>() {
+					public Boolean call(List<byte[]> list) {
+						return !list.isEmpty();
+					}
+				})
+				.map(new Func1<List<byte[]>, byte[]>() {
+					public byte[] call(List<byte[]> list) {
 
-				byte[] result = new byte[0];
+						byte[] result = new byte[0];
 
-				for (byte[] data : list) {
-					byte[] newResult = new byte[result.length + data.length];
-					System.arraycopy(result, 0, newResult, 0, result.length);
-					System.arraycopy(data, 0, newResult, result.length,
-							data.length);
-					result = newResult;
-				}
+						for (byte[] data : list) {
+							byte[] newResult = new byte[result.length
+									+ data.length];
+							System.arraycopy(result, 0, newResult, 0,
+									result.length);
+							System.arraycopy(data, 0, newResult, result.length,
+									data.length);
+							result = newResult;
+						}
 
-				return result;
-			}
-		}).doOnEach(new EmptyObserver<byte[]>() {
-			@Override
-			public void onNext(byte[] audioData) {
-				System.out.println("Recorded size: " + audioData.length);
-			}
-		}).subscribeOn(Schedulers.from(Executors.newFixedThreadPool(4)));
+						return result;
+					}
+				})
+				.doOnEach(new EmptyObserver<byte[]>() {
+					@Override
+					public void onNext(byte[] audioData) {
+						System.out
+								.println("Recorded size: " + audioData.length);
+					}
+				})
+				.subscribeOn(Schedulers.from(Executors.newFixedThreadPool(4)))
+				.doOnCompleted(new Action0() {
+					public void call() {
+						try {
+							stream.close();
+						} catch (IOException e) {
+							throw new OnErrorFailedException(e);
+						}
+					}
+				});
 
-		// TODO ACY a mettre a la fin
-		// getTargetDataLine().stop();
-		// getTargetDataLine().close();
-	}
-
-	public Observer<Object> getInTick() {
-		return inTick;
+		outAudioFormat = Observable.just(getAudioFormat());
 	}
 
 	public Observer<Integer> getInThreshold() {
@@ -242,6 +250,10 @@ public class MicrophoneBlock extends Block {
 
 	public Observable<byte[]> getOut() {
 		return out;
+	}
+
+	public Observable<AudioFormat> getOutAudioFormat() {
+		return outAudioFormat;
 	}
 
 	public AudioFormat getAudioFormat() {
@@ -259,10 +271,11 @@ public class MicrophoneBlock extends Block {
 				bigEndian);
 	}
 
-	private Observer<Object> inTick;
 	private Observer<Integer> inThreshold;
 
 	private Observable<byte[]> out;
+
+	private Observable<AudioFormat> outAudioFormat;
 
 	private int threshold = 1;
 

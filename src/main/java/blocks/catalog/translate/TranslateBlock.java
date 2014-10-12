@@ -6,10 +6,10 @@ import rx.exceptions.OnErrorThrowable;
 import rx.functions.Func1;
 import rx.observers.EmptyObserver;
 import rx.subjects.PublishSubject;
-import blocks.core.Block;
+import blocks.core.BlockSupport;
 import blocks.util.Language;
 
-public class TranslateBlock extends Block {
+public class TranslateBlock extends BlockSupport {
 
 	@Override
 	protected void initialize() {

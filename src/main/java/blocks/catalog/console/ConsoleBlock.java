@@ -1,13 +1,13 @@
 package blocks.catalog.console;
 
 import rx.Observer;
-import blocks.core.Block;
+import blocks.core.BlockSupport;
 
-public class ConsoleBlock extends Block {
+public class ConsoleBlock extends BlockSupport {
 
 	@Override
 	protected void initialize() {
-		inMessage = new Observer<String>() {
+		inMessage = new Observer<Object>() {
 
 			public void onCompleted() {
 				System.out.println("-------------------------");
@@ -17,16 +17,16 @@ public class ConsoleBlock extends Block {
 				System.out.println("Error : " + e.getMessage());
 			}
 
-			public void onNext(String message) {
-				System.out.println(message);
+			public void onNext(Object message) {
+				System.out.println(message.toString());
 			}
 		};
 	}
-	
-	public Observer<String> getInMessage() {
+
+	public Observer<Object> getInMessage() {
 		return inMessage;
-	}	
-	
-	private Observer<String> inMessage;
+	}
+
+	private Observer<Object> inMessage;
 
 }
