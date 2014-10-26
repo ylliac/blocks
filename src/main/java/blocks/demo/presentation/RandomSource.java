@@ -1,6 +1,5 @@
 package blocks.demo.presentation;
 
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -12,7 +11,7 @@ public class RandomSource extends BlockSupport {
 
 	@Override
 	protected void initialize() {
-		out = Observable.interval(50, TimeUnit.MILLISECONDS).map(
+		out = Observable.interval(1, TimeUnit.MILLISECONDS).map(
 				new Func1<Long, Float>() {
 
 					@Override
@@ -20,24 +19,6 @@ public class RandomSource extends BlockSupport {
 						return (float) (random.nextGaussian() * 100 / 3);
 					}
 
-				});
-	}
-
-	public Observable<Float> getBufferedOut() {
-		return out.buffer(1, TimeUnit.SECONDS).map(
-				new Func1<List<Float>, Float>() {
-
-					@Override
-					public Float call(List<Float> values) {
-						float result = 0;
-						if (!values.isEmpty()) {
-							for (float value : values) {
-								result += value;
-							}
-							result /= values.size();
-						}
-						return result;
-					}
 				});
 	}
 

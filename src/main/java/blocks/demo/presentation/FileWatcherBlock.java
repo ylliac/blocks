@@ -1,4 +1,4 @@
-package blocks.catalog.filewatcher;
+package blocks.demo.presentation;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -11,6 +11,7 @@ import blocks.core.BlockSupport;
 
 import com.github.davidmoten.rx.FileObservable;
 
+//TODO ACY Pas fini
 public class FileWatcherBlock extends BlockSupport {
 
 	private static String DATA_FOLDER = "data/";
@@ -26,6 +27,9 @@ public class FileWatcherBlock extends BlockSupport {
 					public File call(WatchEvent<?> watchEvent) {
 						// A new Path was created
 						Path newPath = (Path) watchEvent.context();
+
+						System.out.println("NEW");
+						
 						// Output
 						return new File(DATA_FOLDER + newPath.toString());
 					}

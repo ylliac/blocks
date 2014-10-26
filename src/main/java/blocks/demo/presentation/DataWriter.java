@@ -11,6 +11,7 @@ import rx.exceptions.OnErrorFailedException;
 import rx.observers.EmptyObserver;
 import blocks.core.BlockSupport;
 
+//TODO ACY Pas fini
 public class DataWriter extends BlockSupport {
 
 	private static int counter = 1;
@@ -23,10 +24,14 @@ public class DataWriter extends BlockSupport {
 				try (FileOutputStream fileOutput = new FileOutputStream(
 						"data/samples" + counter++);
 						DataOutputStream dataOutput = new DataOutputStream(
-								fileOutput);) {
+								fileOutput);) {					
+					System.out.print("WRITE");
 					for (float value : values) {
 						dataOutput.writeFloat(value);
-					}
+						
+						System.out.print("w" + value + " ");
+					}					
+					System.out.println("");
 				} catch (FileNotFoundException e) {
 					throw new OnErrorFailedException(e);
 				} catch (IOException e) {

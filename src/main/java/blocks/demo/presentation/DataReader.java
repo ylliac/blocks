@@ -16,6 +16,7 @@ import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 import blocks.core.BlockSupport;
 
+//TODO ACY Pas fini
 public class DataReader extends BlockSupport {
 
 	@Override
@@ -28,6 +29,8 @@ public class DataReader extends BlockSupport {
 			public List<Float> call(File file) {
 				List<Float> result = new ArrayList<Float>();
 
+				System.out.print("READ");
+				
 				try (FileInputStream fileInput = new FileInputStream(file);
 						DataInputStream dataInput = new DataInputStream(
 								fileInput);) {
@@ -36,6 +39,8 @@ public class DataReader extends BlockSupport {
 						try {
 							float value = dataInput.readFloat();
 							result.add(value);
+							
+							System.out.print("r" + value + " ");
 						} catch (EOFException e) {
 							eof = true;
 						}
@@ -45,6 +50,8 @@ public class DataReader extends BlockSupport {
 				} catch (IOException e) {
 					throw new OnErrorFailedException(e);
 				}
+				
+				System.out.println("");
 
 				return result;
 			}
@@ -53,6 +60,13 @@ public class DataReader extends BlockSupport {
 
 			@Override
 			public Observable<Float> call(List<Float> collection) {
+
+				System.out.print("LIST : ");
+				for (Float value : collection) {
+					System.out.print("l" + value + " ");
+				}
+				System.out.println("");
+				
 				return Observable.from(collection);
 			}
 		});

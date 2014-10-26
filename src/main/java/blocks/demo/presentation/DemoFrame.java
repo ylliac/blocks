@@ -1,7 +1,11 @@
 package blocks.demo.presentation;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 import java.util.Random;
+
+import javax.swing.AbstractButton;
+import javax.swing.JToggleButton;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -14,14 +18,22 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
+import rx.Observable;
 import rx.Observer;
+import rx.functions.Func1;
+import rx.observables.SwingObservable;
 import rx.observers.EmptyObserver;
+import rx.schedulers.SwingScheduler;
 
 public class DemoFrame extends ApplicationFrame {
 
 	public DemoFrame(String title) {
 		super(title);
 
+		// CHART
+		dataset = new DynamicTimeSeriesCollection(1, 2 * 60, new Second());
+		dataset.setTimeBase(new Second(0, 0, 0, 1, 1, 2011));
+		dataset.addSeries(gaussianData(), 0, "Gaussian data");
 		in = new EmptyObserver<Float>() {
 			@Override
 			public void onNext(Float newData) {
@@ -31,13 +43,22 @@ public class DemoFrame extends ApplicationFrame {
 				dataset.appendData(array);
 			}
 		};
-
-		dataset = new DynamicTimeSeriesCollection(1, 2 * 60, new Second());
-		dataset.setTimeBase(new Second(0, 0, 0, 1, 1, 2011));
-		dataset.addSeries(gaussianData(), 0, "Gaussian data");
-
 		JFreeChart chart = createChart(dataset);
 		this.add(new ChartPanel(chart), BorderLayout.CENTER);
+
+		// PLAY / PAUSE BUTTON
+		playPauseButton = new JToggleButton("PLAY / PAUSE");
+		outPlay = SwingObservable.fromButtonAction(playPauseButton)
+				.map(new Func1<ActionEvent, Boolean>() {
+
+					@Override
+					public Boolean call(ActionEvent actionEvent) {
+						AbstractButton abstractButton = (AbstractButton) actionEvent
+								.getSource();
+						return abstractButton.getModel().isSelected();
+					}
+				}).subscribeOn(SwingScheduler.getInstance());
+		this.add(playPauseButton, BorderLayout.SOUTH);
 
 		pack();
 		RefineryUtilities.centerFrameOnScreen(this);
@@ -68,9 +89,16 @@ public class DemoFrame extends ApplicationFrame {
 		return in;
 	}
 
+	public Observable<Boolean> getOutPlay() {
+		return outPlay;
+	}
+
 	private Observer<Float> in;
 
+	private Observable<Boolean> outPlay;
+
 	private final DynamicTimeSeriesCollection dataset;
+	private JToggleButton playPauseButton;
 
 	/**
 	 * UID.
