@@ -75,6 +75,18 @@ public class Variant {
 		return result;
 	}
 
+	public static byte[] toBytes(Object value) {
+		byte[] result = null;
+
+		ByteBuffer buffer = toByteBuffer(value);
+		if (buffer != null) {
+			result = new byte[buffer.remaining()];
+			buffer.get(result);
+		}
+
+		return result;
+	}
+
 	// DOUBLE
 
 	public static boolean canConvertToDouble(Object value) {

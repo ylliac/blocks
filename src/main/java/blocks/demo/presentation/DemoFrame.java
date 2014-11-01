@@ -23,7 +23,9 @@ import rx.Observer;
 import rx.functions.Func1;
 import rx.observables.SwingObservable;
 import rx.observers.EmptyObserver;
+import rx.schedulers.Schedulers;
 import rx.schedulers.SwingScheduler;
+import rx.subjects.PublishSubject;
 
 public class DemoFrame extends ApplicationFrame {
 
@@ -34,30 +36,36 @@ public class DemoFrame extends ApplicationFrame {
 		dataset = new DynamicTimeSeriesCollection(1, 2 * 60, new Second());
 		dataset.setTimeBase(new Second(0, 0, 0, 1, 1, 2011));
 		dataset.addSeries(gaussianData(), 0, "Gaussian data");
-		in = new EmptyObserver<Float>() {
-			@Override
-			public void onNext(Float newData) {
-				float[] array = new float[1];
-				array[0] = newData;
-				dataset.advanceTime();
-				dataset.appendData(array);
-			}
-		};
+		in = PublishSubject.create();
+		in.observeOn(SwingScheduler.getInstance()).subscribe(
+				new EmptyObserver<Float>() {
+					@Override
+					public void onNext(Float newData) {
+						float[] array = new float[1];
+						array[0] = newData;
+						dataset.advanceTime();
+						dataset.appendData(array);
+					}
+				});
 		JFreeChart chart = createChart(dataset);
 		this.add(new ChartPanel(chart), BorderLayout.CENTER);
 
 		// PLAY / PAUSE BUTTON
 		playPauseButton = new JToggleButton("PLAY / PAUSE");
-		outPlay = SwingObservable.fromButtonAction(playPauseButton)
+		outPlay = SwingObservable
+				.fromButtonAction(playPauseButton)
 				.map(new Func1<ActionEvent, Boolean>() {
 
 					@Override
 					public Boolean call(ActionEvent actionEvent) {
 						AbstractButton abstractButton = (AbstractButton) actionEvent
 								.getSource();
-						return abstractButton.getModel().isSelected();
+						boolean isSelected = abstractButton.getModel()
+								.isSelected();
+						return isSelected;
 					}
-				}).subscribeOn(SwingScheduler.getInstance());
+				}).subscribeOn(SwingScheduler.getInstance())
+				.observeOn(Schedulers.computation());
 		this.add(playPauseButton, BorderLayout.SOUTH);
 
 		pack();
@@ -93,7 +101,7 @@ public class DemoFrame extends ApplicationFrame {
 		return outPlay;
 	}
 
-	private Observer<Float> in;
+	private PublishSubject<Float> in;
 
 	private Observable<Boolean> outPlay;
 

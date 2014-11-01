@@ -4,69 +4,58 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import rx.Observable;
-import rx.Subscriber;
+import rx.Subscription;
 import rx.exceptions.OnErrorThrowable;
-import rx.functions.Func1;
 import rx.observers.EmptyObserver;
-import rx.observers.Subscribers;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import blocks.core.BlockSupport;
 
-//TODO ACY Reste un truc à corriger : quand la source s'arrête, les valeurs en buffer dans la queue ne sont pas emises
-//Il faudrait plutôt utiliser un observable qui envoie les données d'une blocking queue en boucle. Quand il n'y a pas de données, il wait() tout seul comme ca.
-//L'avantage serait d'exposer des blockingqueue au lieu des subject dans les interfaces graphiques
-public class GateBlock extends BlockSupport {
+public class GateBlock<T> extends BlockSupport {
 
 	@Override
 	protected void initialize() {
+
+		queue = new LinkedBlockingQueue<>();
 
 		out = PublishSubject.create();
 
 		in = PublishSubject.create();
 		// Always add values in a queue
-		in.subscribe(new EmptyObserver<Float>() {
+		in.subscribe(new EmptyObserver<T>() {
 			@Override
-			public void onNext(Float value) {
-				queue.add(value);
+			public void onNext(T value) {
+				try {
+					queue.put(value);
+				} catch (InterruptedException e) {
+					throw OnErrorThrowable.from(e);
+				}
 			}
 		});
-		// On connected, return the last queue value
-		final Observable<Float> queueObservable = in
-				.map(new Func1<Float, Float>() {
 
-					@Override
-					public Float call(Float value) {
-						try {
-							return queue.take();
-						} catch (InterruptedException e) {
-							throw OnErrorThrowable.from(e);
-						}
-					}
-				});
+		final Observable<T> queueObservable = QueueObservables.from(queue);
 
 		// Connect or not
 		inSwitch = PublishSubject.create();
 		inSwitch.subscribe(new EmptyObserver<Boolean>() {
 			@Override
 			public void onNext(Boolean value) {
-				if (value) {
-					if (subscriber == null) {
-						subscriber = Subscribers.from(out);
-						queueObservable.subscribe(subscriber);
-					}
-				} else {
-					subscriber.unsubscribe();
-					subscriber = null;
+				if (value && subscription == null) {
+					subscription = queueObservable.subscribeOn(
+							Schedulers.newThread()).subscribe(out);
+				} else if (!value && subscription != null) {
+					subscription.unsubscribe();
+					subscription = null;
 				}
 			}
 		});
 	}
 
-	public PublishSubject<Float> getIn() {
+	public PublishSubject<T> getIn() {
 		return in;
 	}
 
-	public PublishSubject<Float> getOut() {
+	public PublishSubject<T> getOut() {
 		return out;
 	}
 
@@ -76,11 +65,11 @@ public class GateBlock extends BlockSupport {
 
 	private PublishSubject<Boolean> inSwitch;
 
-	private PublishSubject<Float> in;
-	private PublishSubject<Float> out;
+	private PublishSubject<T> in;
+	private PublishSubject<T> out;
 
-	private Subscriber<Float> subscriber = null;
+	private Subscription subscription;
 
-	private BlockingQueue<Float> queue = new LinkedBlockingQueue<>();
+	private BlockingQueue<T> queue;
 
 }

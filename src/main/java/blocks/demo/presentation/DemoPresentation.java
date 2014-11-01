@@ -3,13 +3,13 @@ package blocks.demo.presentation;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import rx.Notification;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.schedulers.SwingScheduler;
 import blocks.catalog.console.ConsoleBlock;
+import blocks.catalog.messaging.MessageEmitter;
+import blocks.catalog.messaging.MessageReceiver;
 import blocks.catalog.queue.GateBlock;
 
 public class DemoPresentation {
@@ -19,7 +19,8 @@ public class DemoPresentation {
 		// demo.sourceToGraph();
 		// demo.sourceToThrottleToGraph();
 		// demo.sourceToBufferToGraph();
-		demo.sourceToThrottleToQueueToGraph();
+		// demo.sourceToThrottleToQueueToGraph();
+		demo.sourceToThrottleTo0MQToGraph();
 	}
 
 	// Source simple affichage simple
@@ -90,21 +91,47 @@ public class DemoPresentation {
 	public void sourceToThrottleToQueueToGraph() {
 		RandomSource source = new RandomSource();
 		DemoFrame frame = new DemoFrame("Test");
-		GateBlock gate = new GateBlock();
+		GateBlock<Float> gate = new GateBlock<>();
 
 		source.getOut().throttleFirst(50, TimeUnit.MILLISECONDS)
 				.subscribe(gate.getIn());
-		gate.getOut().observeOn(SwingScheduler.getInstance())
-				.subscribe(frame.getIn());
-		frame.getOutPlay().observeOn(Schedulers.computation())
-				.subscribe(gate.getInSwitch());
+		gate.getOut().subscribe(frame.getIn());
+		frame.getOutPlay().subscribe(gate.getInSwitch());
 
 		frame.setVisible(true);
 	}
 
 	// TODO On stocke les données en RAM en attendant ? Ecrire et lire dans un
 	// channel pour "mettre en cache" les données
+	// SOURCE --> THROTTLE --> QUEUE --> GRAPH
+	public void sourceToThrottleToFileToGraph() {
+		// TODO
+	}
 
 	// TODO Utiliser jeromq pour dialoguer à distance
+	public void sourceToThrottleTo0MQToGraph() {
+		RandomSource source = new RandomSource();
+		DemoFrame frame = new DemoFrame("Test");
+
+		MessageEmitter<Float> emitter = new MessageEmitter<>();
+		MessageReceiver<Float> receiver = new MessageReceiver<>();
+
+		source.getOut().throttleFirst(50, TimeUnit.MILLISECONDS)
+				.subscribe(emitter.getIn());
+		receiver.getOut().subscribe(frame.getIn());
+
+		frame.setVisible(true);
+	}
+
+	// TODO Ca commence à faire un peu fouilli, on pourrait pas utiliser un DSL
+	// ?
+	public void dsl() {
+		// TODO
+	}
+
+	// TODO Mais c'est mieux avec les schemas
+	public void schemaToDsl() {
+		// TODO
+	}
 
 }

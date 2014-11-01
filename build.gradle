@@ -44,6 +44,10 @@ dependencies {
     
     //JFreeChart
     compile group: 'org.jfree', name: 'jfreechart', version: '1.0.14'
+    
+    //JeroMQ
+    compile group: 'org.zeromq', name: 'jeromq', version: '0.3.4'
+    
 }
 
 test {
