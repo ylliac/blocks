@@ -112,13 +112,18 @@ public class DemoPresentation {
 	public void sourceToThrottleTo0MQToGraph() {
 		RandomSource source = new RandomSource();
 		DemoFrame frame = new DemoFrame("Test");
+		GateBlock<Float> gate = new GateBlock<>();
 
 		MessageEmitter<Float> emitter = new MessageEmitter<>();
+		emitter.setConnectionString("tcp://*:5556");
 		MessageReceiver<Float> receiver = new MessageReceiver<>();
+		receiver.setConnectionString("tcp://localhost:5556");
 
 		source.getOut().throttleFirst(50, TimeUnit.MILLISECONDS)
 				.subscribe(emitter.getIn());
-		receiver.getOut().subscribe(frame.getIn());
+		receiver.getOut().subscribe(gate.getIn());
+		gate.getOut().subscribe(frame.getIn());
+		frame.getOutPlay().subscribe(gate.getInSwitch());
 
 		frame.setVisible(true);
 	}

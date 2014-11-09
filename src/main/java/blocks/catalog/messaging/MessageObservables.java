@@ -15,12 +15,10 @@ public class MessageObservables {
 			@Override
 			public void call(Subscriber<? super T> o) {
 
-				System.out.println("START");
 				for (;;) {
 					try {
 						T value = (T) SerializationUtils.deserialize(socket
 								.recv());
-						System.out.println("RECEIVE " + value);
 						o.onNext(value);
 					} catch (ClassCastException e) {
 						o.onError(OnErrorThrowable.from(e));

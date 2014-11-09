@@ -11,17 +11,20 @@ public class MessageEmitter<T> extends BlockSupport {
 
 	@Override
 	protected void initialize() {
+		in = PublishSubject.create();
+	}
+
+	public void setConnectionString(String connectionString) {
+
 		ZMQ.Context context = ZMQ.context(1);
 
 		final ZMQ.Socket publisher = context.socket(ZMQ.PUB);
-		publisher.bind("tcp://*:5556");
+		publisher.bind(connectionString);
 
-		in = PublishSubject.create();
 		in.subscribe(new EmptyObserver<T>() {
 			@Override
 			public void onNext(T value) {
 				byte[] data = SerializationUtils.serialize(value);
-				System.out.println("SEND " + value);
 				publisher.send(data, 0);
 			}
 		});
