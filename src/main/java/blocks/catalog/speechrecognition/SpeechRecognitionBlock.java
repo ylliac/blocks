@@ -1,34 +1,58 @@
 package blocks.catalog.speechrecognition;
 
-import blocks.core.BlockSupport;
+import java.io.IOException;
 
-import com.getflourish.stt.STT;
-import com.getflourish.stt.TranscribeListener;
+import blocks.core.BlockSupport;
+import edu.cmu.sphinx.api.Configuration;
+import edu.cmu.sphinx.api.LiveSpeechRecognizer;
+import edu.cmu.sphinx.api.SpeechResult;
 
 public class SpeechRecognitionBlock extends BlockSupport {
-
-	// Implemented with :
-	// STT: http://stt.getflourish.com/
-	// Minim-java: https://github.com/casmi/minim-java
-	// (which was inspired by Minim: http://code.compartmental.net/tools/minim/)
 
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
 
-		TranscribeListener listener = new TranscribeListener() {
-			
-			public void transcribe(String utterance, float confidence, int status) {
-				// TODO Auto-generated method stub
-				System.out.println("STT : " + utterance);
-			}
-		};
-		
-		speechToText = new STT(listener);
-		speechToText.setLanguage("fr-FR"); // TODO ACY Paramétrer
-		speechToText.begin();
-	}
+		Configuration configuration = new Configuration();
 
-	private STT speechToText;
+		// Set path to acoustic model.
+		configuration
+				.setAcousticModelPath("file:conf/speech/acoustic/lium_french_f0");
+		// Set path to dictionary.
+		configuration
+				.setDictionaryPath("file:conf/speech/dic/frenchWords62K.dic");
+		// Set language model
+		// TODO ACY Laisser en commentaire qq part
+		// configuration
+		// .setLanguageModelPath("file:conf/speech/model/french3g62K.lm.dmp");
+		configuration.setGrammarPath("file:conf/speech/grammar");
+		configuration.setGrammarName("language");
+		configuration.setUseGrammar(true);
+
+		try {
+			LiveSpeechRecognizer recognizer = new LiveSpeechRecognizer(
+					configuration);
+
+			// Start recognition process pruning previously cached data.
+			recognizer.startRecognition(true);
+
+			System.out.println("START");
+
+			SpeechResult result;
+			while ((result = recognizer.getResult()) != null) {
+				// Print utterance string without filler words.
+				System.out.println(result.getHypothesis());
+			}
+
+			System.out.println("STOP");
+
+			// Pause recognition process. It can be resumed then with
+			// startRecognition(false).
+			recognizer.stopRecognition();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }

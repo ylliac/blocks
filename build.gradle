@@ -13,6 +13,9 @@ jar {
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
 }
 
 dependencies {
@@ -36,11 +39,14 @@ dependencies {
     //Translator
     compile group: 'com.memetix', name: 'microsoft-translator-java-api', version: '0.6.2'
         
-    //Speech recognition lib dependencies
+    //Speech recognition lib dependencies -- deprecated
     compile group: 'com.googlecode.soundlibs', name: 'tritonus-share', version: '0.3.7-2'
     compile group: 'com.googlecode.soundlibs', name: 'jlayer', version: '1.0.1-1'
     compile group: 'com.googlecode.soundlibs', name: 'mp3spi', version: '1.9.5-1'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.3'    
+    
+    //Speech recognition Sphinx
+    compile group: 'edu.cmu.sphinx', name: 'sphinx4-core', version: '1.0-SNAPSHOT'
     
     //JFreeChart
     compile group: 'org.jfree', name: 'jfreechart', version: '1.0.14'

@@ -1,15 +1,59 @@
 
-Recopier tous les anciens blocks du projets Maven
 
-Utiliser RxJava
 
+PRESENTATION :
+
+- Présenter un exemple de construction d'observable.
+- Rajouter des fonctionnalités slide par slide (je ne veux que... mais je veux ...)
+- Présenter l'autre côté : l'Observer
+- Parler de la gestion des erreurs
+ 
+- Reprendre un exemple complexe d'Observable et le découper en bloc
+--> Analogie : observable = output, observer = input.
+
+??? A compléter
+
+
+LANGAGES :
+??? Est ce possible ?
 Faire des composants en :
 	- Groovy
 	- Scala
 	- JavaScript
 	- Jython
 	
-Faire un réseau de neurones
+
+BLUETOOTH :
+Au dessus d'une stack installée (= driver)
+http://bluecove.org/index.html
+http://bluecove.org/maven.html
+
+
+WIIMOTE :
+Au dessus d'une implémentation JSR-82 (bluecove)
+http://www.wiigee.org/ --> reconnaissance et apprentissage de gestes
+https://github.com/micromu/WiiRemoteJ --> connu
+http://motej.sourceforge.net/
+
+
+KINECT :
+??? Difficile de trouver une dépendance facile à installer, OpenKinect semble la plus prométeuse
+
+
+USB IR TOY v2 : 
+???
+
+
+TEXT TO SPEECH :
+En francais : SI VOX
+http://users.polytech.unice.fr/~helen/SERVER_SI_VOX/pages/readme.php
+http://www.nicolas-peltier.fr/2013/12/15/synthese-vocale-francaise-en-java/
+En anglais : FreeTTS
+http://freetts.sourceforge.net/docs/index.php
+http://javaexamplemaven.blogspot.fr/2013/01/after-spending-too-much-time-trying-to.html
+
+
+
 
 
 
