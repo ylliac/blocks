@@ -22,6 +22,17 @@ Faire des composants en :
 	- JavaScript
 	- Jython
 	
+JAVAFX :
+Graphiques avec JavaFX
+https://docs.oracle.com/javafx/2/charts/jfxpub-charts.htm
+Binding avec JavaFX
+https://docs.oracle.com/javafx/2/binding/jfxpub-binding.htm
+Vue - controller simplifié ?
+http://www.javafxdata.org/overview_flow.html
+Source de données observable ?
+http://www.javafxdata.org/overview_datasources.html
+Sur Android !
+http://javafxports.org/page/Getting_Started
 
 BLUETOOTH :
 Au dessus d'une stack installée (= driver)
@@ -42,7 +53,6 @@ KINECT :
 
 USB IR TOY v2 : 
 ???
-
 
 TEXT TO SPEECH :
 En francais : SI VOX
