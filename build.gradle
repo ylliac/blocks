@@ -48,6 +48,9 @@ dependencies {
     //Speech recognition Sphinx
     compile group: 'edu.cmu.sphinx', name: 'sphinx4-core', version: '1.0-SNAPSHOT'
     
+    //Text to speech SI VOX
+    compile files('libs/SI_VOX.jar')
+    
     //JFreeChart
     compile group: 'org.jfree', name: 'jfreechart', version: '1.0.14'
     

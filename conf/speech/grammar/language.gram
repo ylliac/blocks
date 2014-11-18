@@ -3,3 +3,4 @@
 grammar language;
 
 public <test> = ceci est un test;
+public <bonjour> = comment vas tu;

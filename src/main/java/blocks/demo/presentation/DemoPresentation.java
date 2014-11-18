@@ -11,7 +11,6 @@ import blocks.catalog.console.ConsoleBlock;
 import blocks.catalog.messaging.MessageEmitter;
 import blocks.catalog.messaging.MessageReceiver;
 import blocks.catalog.queue.GateBlock;
-import blocks.catalog.speechrecognition.SpeechRecognitionBlock;
 
 public class DemoPresentation {
 
@@ -20,9 +19,8 @@ public class DemoPresentation {
 		// demo.sourceToGraph();
 		// demo.sourceToThrottleToGraph();
 		// demo.sourceToBufferToGraph();
-		// demo.sourceToThrottleToQueueToGraph();
+		demo.sourceToThrottleToQueueToGraph();
 		// demo.sourceToThrottleTo0MQToGraph();
-		demo.speechRecognition();
 	}
 
 	// Source simple affichage simple
@@ -129,12 +127,6 @@ public class DemoPresentation {
 		frame.getOutPlay().subscribe(gate.getInSwitch());
 
 		frame.setVisible(true);
-	}
-
-	// TODO TEST SPEECH
-	public void speechRecognition() {
-		// TODO
-		SpeechRecognitionBlock speech = new SpeechRecognitionBlock();
 	}
 
 	// TODO Ca commence à faire un peu fouilli, on pourrait pas utiliser un DSL

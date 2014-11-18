@@ -11,7 +11,15 @@ PRESENTATION :
 - Reprendre un exemple complexe d'Observable et le découper en bloc
 --> Analogie : observable = output, observer = input.
 
+Avantage : Réuntilisation
+-> Exemple avec une boucle for qui déroule un algo sur chaque donnée puis comparaison avec Observable.filter().map().etc.
+
 ??? A compléter
+
+DSL :
+A faire en s'inspirant de :
+http://noflojs.org/documentation/fbp/
+https://github.com/noflo/fbp#readme
 
 
 LANGAGES :
@@ -54,7 +62,7 @@ KINECT :
 USB IR TOY v2 : 
 ???
 
-TEXT TO SPEECH :
+TEXT TO SPEECH : OK
 En francais : SI VOX
 http://users.polytech.unice.fr/~helen/SERVER_SI_VOX/pages/readme.php
 http://www.nicolas-peltier.fr/2013/12/15/synthese-vocale-francaise-en-java/
@@ -62,7 +70,8 @@ En anglais : FreeTTS
 http://freetts.sourceforge.net/docs/index.php
 http://javaexamplemaven.blogspot.fr/2013/01/after-spending-too-much-time-trying-to.html
 
-
+SPEECH RECOGNITION : BOF
+A terminer !
 
 
 
