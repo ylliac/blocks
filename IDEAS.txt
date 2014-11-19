@@ -11,8 +11,11 @@ PRESENTATION :
 - Reprendre un exemple complexe d'Observable et le découper en bloc
 --> Analogie : observable = output, observer = input.
 
-Avantage : Réuntilisation
+Avantage : Réutilisation
 -> Exemple avec une boucle for qui déroule un algo sur chaque donnée puis comparaison avec Observable.filter().map().etc.
+
+Idée : Présenter le concept puis exemple avec un client qui demande une appli simple et qui rajoute des fonctionnalités une à une
+
 
 ??? A compléter
 
@@ -72,6 +75,14 @@ http://javaexamplemaven.blogspot.fr/2013/01/after-spending-too-much-time-trying-
 
 SPEECH RECOGNITION : BOF
 A terminer !
+
+
+WEBSOCKET :
+Pour faire une démo de graph web (et voir les performances)
+http://ed.zehome.com/blog/experimentation-sur-des-graphiques-temps-reel-avec-nodejs
+http://blog.zenika.com/index.php?post/2012/06/22/Les-WebSockets-en-pratique
+https://github.com/TooTallNate/Java-WebSocket
+http://blog.zenika.com/index.php?post/2011/02/25/Html5-et-les-webSockets
 
 
 
