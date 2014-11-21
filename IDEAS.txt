@@ -85,5 +85,14 @@ https://github.com/TooTallNate/Java-WebSocket
 http://blog.zenika.com/index.php?post/2011/02/25/Html5-et-les-webSockets
 
 
+RxJAVA 1.0 :
+https://github.com/ReactiveX/RxJava/releases
+
+RxJava - Quasar :
+https://github.com/puniverse/quasar
+
+
+
+
 
 
