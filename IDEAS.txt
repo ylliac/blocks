@@ -44,6 +44,12 @@ Source de données observable ?
 http://www.javafxdata.org/overview_datasources.html
 Sur Android !
 http://javafxports.org/page/Getting_Started
+Maven :
+http://www.guigarage.com/2012/10/building-javafx-applications-with-maven/
+http://notaboekje.blogspot.fr/2012/02/creer-un-projet-maven-pour-javafx.html
+http://stackoverflow.com/a/13593510
+http://zenjava.com/javafx/maven/
+
 
 BLUETOOTH :
 Au dessus d'une stack installée (= driver)

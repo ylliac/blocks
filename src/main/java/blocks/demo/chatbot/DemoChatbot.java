@@ -3,7 +3,7 @@ package blocks.demo.chatbot;
 import rx.Observable;
 import blocks.catalog.chatbot.ChatBotBlock;
 import blocks.catalog.console.ConsoleBlock;
-import blocks.catalog.speechrecognition.SpeechRecognitionBlock;
+import blocks.catalog.speechrecognition.SpeechRecognitionOfflineBlock;
 import blocks.catalog.translate.TranslateOnlineBlock;
 import blocks.catalog.tts.TextToSpeechOfflineBlock;
 import blocks.catalog.tts.TextToSpeechOnlineBlock;
@@ -16,7 +16,7 @@ public class DemoChatbot {
 		// demo.textToSpeechOnline();
 		// demo.textToSpeechOffline();
 		// demo.textToTranslateOnlineToBotToSpeechOnline();
-		demo.speechRecognition();
+		demo.speechRecognitionOfflineToSpeechOffline();
 	}
 
 	// TEXT -> SPEECH ONLINE
@@ -49,9 +49,11 @@ public class DemoChatbot {
 		Observable.just("Qui es tu ?").subscribe(translate.getIn());
 	}
 
-	// TODO TEST SPEECH
-	public void speechRecognition() {
-		// TODO
-		SpeechRecognitionBlock speech = new SpeechRecognitionBlock();
+	// SPEECH RECOGNITION OFFLINE -> SPEECH OFFLINE
+	public void speechRecognitionOfflineToSpeechOffline() {
+		SpeechRecognitionOfflineBlock speech = new SpeechRecognitionOfflineBlock();
+		TextToSpeechOfflineBlock tts = new TextToSpeechOfflineBlock();
+
+		speech.getOut().subscribe(tts.getIn());
 	}
 }
