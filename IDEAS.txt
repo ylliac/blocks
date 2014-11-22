@@ -97,7 +97,9 @@ https://github.com/ReactiveX/RxJava/releases
 RxJava - Quasar :
 https://github.com/puniverse/quasar
 
-
+Editeur Graph à tester :
+https://github.com/the-grid/the-graph
+Et eventuellement https://github.com/noflo/noflo-ui
 
 
 
