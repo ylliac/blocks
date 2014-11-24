@@ -64,7 +64,6 @@ dependencies {
     //Websocket
     compile group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.3.0'
     
-    
 }
 
 test {

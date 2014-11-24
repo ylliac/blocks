@@ -1,0 +1,113 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/smoothness/jquery-ui.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="./js/highcharts.js"></script>
+    
+	<script> 
+	
+		function initWS() {
+			var socket = new WebSocket("ws://localhost:8887/"); 
+			socket.onopen = function(evt) { console.log("Connected."); };
+			socket.onmessage = function(evt) { 
+				console.log("Received: " + evt.data);
+			
+				var series = chart.series[0];
+				var x = (new Date()).getTime();
+				var y = parseFloat(evt.data);
+		 		series.addPoint([x,y], true, true);
+			};
+			socket.onclose = function(evt){ 
+				console.log("Disconnected."); 
+			};
+		}
+	
+		window.addEventListener("load", initWS, false);
+				
+    </script> 
+    <script type="text/javascript">
+    var chart;
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                animation: {
+                    duration: 200,
+                    easing: 'linear'
+                },
+                renderTo: 'container',
+                defaultSeriesType: 'spline',
+                marginRight: 10,
+            },
+            title: {
+                text: 'Random source'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 150
+            },
+            yAxis: {
+                title: {
+                    text: 'Value'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function() {
+                    return '<b>'+ this.series.name +'</b><br/>'+
+                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+ 
+                    Highcharts.numberFormat(this.y, 2);
+                }
+            },
+            legend: {
+                    enabled: false
+            },
+            plotOptions: {
+            	series: {
+                    animation: false,
+                    states: {
+                        hover: {
+                            lineWidthPlus: 0
+                        }
+                    },
+                    lineWidth: 1,
+                    marker: {
+                        enabled: false,
+                        radius: 3
+                    }
+                },
+                spline: {
+                    animation: false
+                }
+            },
+            series: [{
+                name: 'Random data',
+                data: (function() {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime(),
+                            i;
+                        for (i = -19; i <= 0; i++) {
+                            data.push({
+                                x: time + i * 300,
+                                y: 0
+                            });
+                        }
+                        return data;
+                    }
+                )(),
+             	// disable limiting series length (without this, series longer than 1000 are not shown)
+                turboThreshold: 0
+            }]
+        });
+    });
+    </script>
+  </head>
+  <body>
+    <div id="container" style="width: auto; height: 500px; margin: 0 auto"></div>
+  </body>
+</html>

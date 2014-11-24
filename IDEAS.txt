@@ -83,7 +83,7 @@ SPEECH RECOGNITION : BOF
 A terminer !
 
 
-WEBSOCKET :
+WEBSOCKET : OK
 Pour faire une démo de graph web (et voir les performances)
 http://ed.zehome.com/blog/experimentation-sur-des-graphiques-temps-reel-avec-nodejs
 http://blog.zenika.com/index.php?post/2012/06/22/Les-WebSockets-en-pratique

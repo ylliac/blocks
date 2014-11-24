@@ -11,6 +11,7 @@ import blocks.catalog.console.ConsoleBlock;
 import blocks.catalog.messaging.MessageEmitter;
 import blocks.catalog.messaging.MessageReceiver;
 import blocks.catalog.queue.GateBlock;
+import blocks.catalog.websocket.WebSocketServerBlock;
 
 public class DemoPresentation {
 
@@ -19,8 +20,9 @@ public class DemoPresentation {
 		// demo.sourceToGraph();
 		// demo.sourceToThrottleToGraph();
 		// demo.sourceToBufferToGraph();
-		demo.sourceToThrottleToQueueToGraph();
+		// demo.sourceToThrottleToQueueToGraph();
 		// demo.sourceToThrottleTo0MQToGraph();
+		demo.sourceToWebSocketToHTML();
 	}
 
 	// Source simple affichage simple
@@ -127,6 +129,23 @@ public class DemoPresentation {
 		frame.getOutPlay().subscribe(gate.getInSwitch());
 
 		frame.setVisible(true);
+	}
+
+	// TODO Ou utiliser une WebSocket pour afficher les résultats dans une page
+	// Web
+	// SOURCE --> THROTTLE --> WEBSOCKET --> HTML
+	public void sourceToWebSocketToHTML() {
+		RandomSource source = new RandomSource();
+		WebSocketServerBlock webSocket = new WebSocketServerBlock();
+		webSocket.setAdress(8887);
+
+		source.getOut().throttleFirst(300, TimeUnit.MILLISECONDS)
+		.map(new Func1<Float, String>() {
+			@Override
+			public String call(Float t1) {
+				return t1.toString();
+			}
+		}).subscribe(webSocket.getIn());
 	}
 
 	// TODO Ca commence à faire un peu fouilli, on pourrait pas utiliser un DSL
