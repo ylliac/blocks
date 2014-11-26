@@ -139,7 +139,7 @@ public class DemoPresentation {
 		WebSocketServerBlock webSocket = new WebSocketServerBlock();
 		webSocket.setAdress(8887);
 
-		source.getOut().throttleFirst(300, TimeUnit.MILLISECONDS)
+		source.getOut()//.throttleFirst(300, TimeUnit.MILLISECONDS)
 		.map(new Func1<Float, String>() {
 			@Override
 			public String call(Float t1) {

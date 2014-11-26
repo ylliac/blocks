@@ -4,23 +4,38 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
     <script type="text/javascript" src="./js/highcharts.js"></script>
+    <script type="text/javascript" src="./js/rx.lite.js"></script>
     
 	<script> 
 	
+		function fromWebSocket(address) {
+		    var ws = new WebSocket(address);
+	
+		    // Handle the data
+		    var osbervable = Rx.Observable.create (function (obs) {
+		        // Handle messages  
+		        ws.onmessage = obs.onNext.bind(obs);
+		        ws.onerror = obs.onError.bind(obs);
+		        ws.onclose = obs.onCompleted.bind(obs);
+	
+		        // Return way to unsubscribe
+		        return ws.close.bind(ws);
+		    });
+	
+		    return osbervable;
+		}
+	
 		function initWS() {
-			var socket = new WebSocket("ws://localhost:8887/"); 
-			socket.onopen = function(evt) { console.log("Connected."); };
-			socket.onmessage = function(evt) { 
-				console.log("Received: " + evt.data);
-			
-				var series = chart.series[0];
-				var x = (new Date()).getTime();
-				var y = parseFloat(evt.data);
-		 		series.addPoint([x,y], true, true);
-			};
-			socket.onclose = function(evt){ 
-				console.log("Disconnected."); 
-			};
+			fromWebSocket('ws://localhost:8887/').throttleFirst(150)
+			.subscribe(
+			    function (evt) {
+			    	console.log("Received: " + evt.data);
+					
+					var series = chart.series[0];
+					var x = (new Date()).getTime();
+					var y = parseFloat(evt.data);
+			 		series.addPoint([x,y], true, true);
+			    });
 		}
 	
 		window.addEventListener("load", initWS, false);
@@ -31,12 +46,9 @@
     $(document).ready(function() {
         chart = new Highcharts.Chart({
             chart: {
-                animation: {
-                    duration: 200,
-                    easing: 'linear'
-                },
+                animation: false,
                 renderTo: 'container',
-                defaultSeriesType: 'spline',
+                defaultSeriesType: 'line',
                 marginRight: 10,
             },
             title: {
@@ -91,7 +103,7 @@
                     var data = [],
                         time = (new Date()).getTime(),
                             i;
-                        for (i = -19; i <= 0; i++) {
+                        for (i = -99; i <= 0; i++) {
                             data.push({
                                 x: time + i * 300,
                                 y: 0
