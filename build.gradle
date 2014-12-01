@@ -27,8 +27,8 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.+'    
     
     //Reactive
-    compile group: 'com.netflix.rxjava', name: 'rxjava-core', version: '0.20.0'
-    compile group: 'com.netflix.rxjava', name: 'rxjava-swing', version: '0.20.0'
+    compile group: 'io.reactivex', name: 'rxjava', version: '1.0.1'
+    compile group: 'io.reactivex', name: 'rxswing', version: '0.21.0'
     compile group: 'com.github.davidmoten', name: 'rxjava-file', version: '0.2'
         
     //Player MP3

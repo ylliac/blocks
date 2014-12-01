@@ -71,6 +71,9 @@ KINECT :
 USB IR TOY v2 : 
 ???
 
+USB ??? :
+http://usb4java.org/
+
 TEXT TO SPEECH : OK
 En francais : SI VOX
 http://users.polytech.unice.fr/~helen/SERVER_SI_VOX/pages/readme.php
@@ -101,6 +104,9 @@ Editeur Graph à tester :
 https://github.com/the-grid/the-graph
 Et eventuellement https://github.com/noflo/noflo-ui
 
+
+MongoDB :
+https://github.com/mongodb/morphia
 
 
 
