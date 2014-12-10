@@ -49,6 +49,8 @@ http://www.guigarage.com/2012/10/building-javafx-applications-with-maven/
 http://notaboekje.blogspot.fr/2012/02/creer-un-projet-maven-pour-javafx.html
 http://stackoverflow.com/a/13593510
 http://zenjava.com/javafx/maven/
+Scene Builder :
+https://www.youtube.com/watch?v=ij0HwRAlCmo
 
 
 BLUETOOTH :
