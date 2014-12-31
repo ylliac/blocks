@@ -21,7 +21,7 @@ public class SearchBlock extends BlockSupport {
 				List<String> result = new ArrayList<>();
 
 				for (int i = 0; i < 10; i++) {
-					result.add(value);
+					result.add(value + i);
 				}
 
 				return result;

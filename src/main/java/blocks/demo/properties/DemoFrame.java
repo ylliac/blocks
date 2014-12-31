@@ -2,7 +2,6 @@ package blocks.demo.properties;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -18,15 +17,13 @@ import org.jfree.ui.RefineryUtilities;
 import rx.functions.Func1;
 import rx.observables.SwingObservable;
 import rx.observers.EmptyObserver;
+import rx.schedulers.SwingScheduler;
 import blocks.core.Property;
 
 public class DemoFrame extends ApplicationFrame {
 
 	public static final String PROP_SEARCH = "search";
 	private Property<String> search;
-
-	public static final String PROP_EXECUTE = "execute";
-	private Property<String> execute;
 
 	public static final String PROP_RESULTS = "results";
 	private Property<List<String>> results;
@@ -35,73 +32,53 @@ public class DemoFrame extends ApplicationFrame {
 		super("DEMO");
 
 		search = new Property<>(PROP_SEARCH);
-		execute = new Property<>(PROP_EXECUTE);
 		results = new Property<>(PROP_RESULTS);
 
 		// Création de la fenêtre
 
-		JLabel label = new JLabel("Search :");
+		JLabel searchLabel = new JLabel("Search :");
 		final JTextField textfield = new JTextField();
-		JButton button = new JButton("GO");
+		JButton searchButton = new JButton("GO");
 
 		JPanel header = new JPanel(new BorderLayout());
-		header.add(label, BorderLayout.NORTH);
+		header.add(searchLabel, BorderLayout.NORTH);
 		header.add(textfield, BorderLayout.CENTER);
-		header.add(button, BorderLayout.EAST);
+		header.add(searchButton, BorderLayout.EAST);
 
-		JList<String> list = new JList<>();
+		JList<String> resultList = new JList<>();
 		final DefaultListModel<String> listModel = new DefaultListModel<>();
 		listModel.addElement("test");
 		listModel.addElement("test");
 		listModel.addElement("test");
-		list.setModel(listModel);
+		resultList.setModel(listModel);
 
 		add(header, BorderLayout.NORTH);
-		add(list, BorderLayout.CENTER);
+		add(resultList, BorderLayout.CENTER);
 
 		// Bind des properties
 
-		search.listen(SwingObservable.fromFocusEvents(textfield).map(
-				new Func1<FocusEvent, String>() {
+		search.listen(
+				SwingScheduler.getInstance(),
+				SwingObservable.fromButtonAction(searchButton).map(
+						new Func1<ActionEvent, String>() {
 
+							@Override
+							public String call(ActionEvent event) {
+								return textfield.getText();
+							}
+
+						}));
+
+		results.sendTo(SwingScheduler.getInstance(),
+				new EmptyObserver<List<String>>() {
 					@Override
-					public String call(FocusEvent focusEvent) {
-
-						System.out.println("SEARCH : " + textfield.getText());
-
-						return textfield.getText();
+					public void onNext(List<String> values) {
+						listModel.removeAllElements();
+						for (String value : values) {
+							listModel.addElement(value);
+						}
 					}
-				}));
-
-		execute.listen(SwingObservable.fromButtonAction(button).map(
-				new Func1<ActionEvent, String>() {
-
-					@Override
-					public String call(ActionEvent event) {
-
-						System.out.println("BUTTON CLICKED : "
-								+ textfield.getText());
-
-						return textfield.getText();
-					}
-
-				}));
-
-		results.sendTo(new EmptyObserver<List<String>>() {
-			@Override
-			public void onNext(List<String> values) {
-
-				System.out.println("RESULTS : ");
-				for (String value : values) {
-					System.out.println("- " + value);
-				}
-
-				listModel.removeAllElements();
-				for (String value : values) {
-					listModel.addElement(value);
-				}
-			}
-		});
+				});
 
 		pack();
 		setSize(400, 500);
@@ -110,10 +87,6 @@ public class DemoFrame extends ApplicationFrame {
 
 	public Property<String> searchProperty() {
 		return search;
-	}
-
-	public Property<String> executeProperty() {
-		return execute;
 	}
 
 	public Property<List<String>> resultsProperty() {

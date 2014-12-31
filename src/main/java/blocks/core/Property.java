@@ -2,8 +2,7 @@ package blocks.core;
 
 import rx.Observable;
 import rx.Observer;
-import rx.functions.Action0;
-import rx.functions.Action1;
+import rx.Scheduler;
 import rx.subjects.BehaviorSubject;
 
 public class Property<T> {
@@ -11,30 +10,6 @@ public class Property<T> {
 	public Property(String name) {
 		this.name = name;
 		this.subject = BehaviorSubject.create();
-
-		subject.doOnCompleted(new Action0() {
-
-			@Override
-			public void call() {
-				System.out.println("COMPLETED");
-			}
-		});
-
-		subject.doOnNext(new Action1<T>() {
-
-			@Override
-			public void call(T value) {
-				System.out.println("VALUE : " + value);
-			}
-		});
-
-		subject.doOnError(new Action1<Throwable>() {
-
-			@Override
-			public void call(Throwable error) {
-				System.out.println("ERROR");
-			}
-		});
 	}
 
 	public String getName() {
@@ -61,8 +36,16 @@ public class Property<T> {
 		observable.subscribe(subject);
 	}
 
+	public void listen(Scheduler scheduler, Observable<T> observable) {
+		observable.subscribeOn(scheduler).subscribe(subject);
+	}
+
 	public void sendTo(Observer<T> observer) {
 		subject.subscribe(observer);
+	}
+
+	public void sendTo(Scheduler scheduler, Observer<T> observer) {
+		subject.subscribeOn(scheduler).subscribe(observer);
 	}
 
 	public Observer<T> endpoint() {
