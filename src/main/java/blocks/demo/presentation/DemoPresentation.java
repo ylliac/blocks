@@ -17,12 +17,12 @@ public class DemoPresentation {
 
 	public static void main(String[] args) {
 		DemoPresentation demo = new DemoPresentation();
-		// demo.sourceToGraph();
+		 demo.sourceToGraph();
 		// demo.sourceToThrottleToGraph();
 		// demo.sourceToBufferToGraph();
 		// demo.sourceToThrottleToQueueToGraph();
 		// demo.sourceToThrottleTo0MQToGraph();
-		demo.sourceToWebSocketToHTML();
+//		demo.sourceToWebSocketToHTML();
 	}
 
 	// Source simple affichage simple
@@ -32,8 +32,8 @@ public class DemoPresentation {
 		ConsoleBlock console = new ConsoleBlock();
 		DemoFrame frame = new DemoFrame("Test");
 
-		source.getOut().subscribeOn(Schedulers.computation())
-				.subscribe(console.getInMessage());
+//		source.getOut().subscribeOn(Schedulers.computation())
+//				.subscribe(console.getInMessage());
 		source.getOut().observeOn(SwingScheduler.getInstance())
 				.subscribe(frame.getIn());
 
