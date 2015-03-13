@@ -1,2 +1,0 @@
-MINGW_HOME=test
-titi=tata
