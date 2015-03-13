@@ -26,7 +26,7 @@
 		}
 	
 		function initWS() {
-			fromWebSocket('ws://localhost:8887/').throttleFirst(150)
+			fromWebSocket('ws://brehat:8887/').throttleFirst(150)
 			.subscribe(
 			    function (evt) {
 			    	console.log("Received: " + evt.data);

@@ -10,6 +10,8 @@ import javax.swing.JToggleButton;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.time.DynamicTimeSeriesCollection;
@@ -35,7 +37,7 @@ public class DemoFrame extends ApplicationFrame {
 		// CHART
 		dataset = new DynamicTimeSeriesCollection(1, 2 * 60, new Second());
 		dataset.setTimeBase(new Second(0, 0, 0, 1, 1, 2011));
-		dataset.addSeries(gaussianData(), 0, "Gaussian data");
+		dataset.addSeries(gaussianData(), 0, "Received Data");
 		in = PublishSubject.create();
 		in.observeOn(SwingScheduler.getInstance()).subscribe(
 				new EmptyObserver<Float>() {
@@ -66,7 +68,7 @@ public class DemoFrame extends ApplicationFrame {
 					}
 				}).subscribeOn(SwingScheduler.getInstance())
 				.observeOn(Schedulers.computation());
-		this.add(playPauseButton, BorderLayout.SOUTH);
+//		this.add(playPauseButton, BorderLayout.SOUTH);
 
 		pack();
 		RefineryUtilities.centerFrameOnScreen(this);
@@ -74,13 +76,16 @@ public class DemoFrame extends ApplicationFrame {
 
 	private JFreeChart createChart(final XYDataset dataset) {
 		final JFreeChart result = ChartFactory.createTimeSeriesChart(
-				"Dynamic series", "hh:mm:ss", "milliVolts", dataset, true,
+				"Sensor data", "hh:mm:ss", "units", dataset, true,
 				true, false);
 		final XYPlot plot = result.getXYPlot();
 		ValueAxis domain = plot.getDomainAxis();
 		domain.setAutoRange(true);
-		ValueAxis range = plot.getRangeAxis();
-		range.setRange(-100, 100);
+		domain.setFixedAutoRange(50000);
+		
+		NumberAxis range = (NumberAxis)plot.getRangeAxis();
+		range.setRange(-100, 100); 
+		
 		return result;
 	}
 

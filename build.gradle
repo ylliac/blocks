@@ -1,7 +1,10 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'application'
 
 description = 'Block collection for JavaFBP'
+
+mainClassName = "blocks.demo.presentation.DemoClientSlow"
 
 sourceCompatibility = 1.7
 version = '1.0'

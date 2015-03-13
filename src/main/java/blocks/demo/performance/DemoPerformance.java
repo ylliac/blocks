@@ -20,7 +20,7 @@ public class DemoPerformance {
 		// demo.forClassic();
 		// demo.observableClassic();
 		// demo.forExecutor();
-		demo.observableExecutor();
+		// demo.observableExecutor();
 
 		// TODO Executor (plusieurs types)
 		// TODO Observables (mêmes schedulers) --> plus simple
@@ -114,42 +114,44 @@ public class DemoPerformance {
 	}
 
 	// TODO Implémentation observable utilisant un Executor (3090ms)
-	public void observableExecutor() {
-
-		List<Integer> initialData = getInitialData();
-
-		final Func1<Integer, Boolean> filterFunc = new Func1<Integer, Boolean>() {
-			@Override
-			public Boolean call(Integer number) {
-				return isPrime(number);
-			}
-		};
-
-		Observable<List<Integer>> observable = Observable
-				.from(initialData)
-				.parallel(
-						new Func1<Observable<Integer>, Observable<Integer>>() {
-
-							@Override
-							public Observable<Integer> call(
-									Observable<Integer> obs) {
-								return obs.filter(filterFunc);
-							}
-
-						}, Schedulers.from(Executors.newCachedThreadPool()))
-				.toList();
-
-		final long startTime = System.currentTimeMillis();
-
-		List<Integer> result = observable.toBlocking().first();
-
-		long elapsedTime = System.currentTimeMillis() - startTime;
-
-		System.out.println("Prime number count: " + result.size());
-		System.out.println("... computed in " + elapsedTime + " ms");
-
-		// TODO Memory leak
-	}
+	// TODO ACY Compile pas quand on fait un run...
+	// public void observableExecutor() {
+	//
+	// List<Integer> initialData = getInitialData();
+	//
+	// final Func1<Integer, Boolean> filterFunc = new Func1<Integer, Boolean>()
+	// {
+	// @Override
+	// public Boolean call(Integer number) {
+	// return isPrime(number);
+	// }
+	// };
+	//
+	// Observable<List<Integer>> observable = Observable
+	// .from(initialData)
+	// .parallel(
+	// new Func1<Observable<Integer>, Observable<Integer>>() {
+	//
+	// @Override
+	// public Observable<Integer> call(
+	// Observable<Integer> obs) {
+	// return obs.filter(filterFunc);
+	// }
+	//
+	// }, Schedulers.from(Executors.newCachedThreadPool()))
+	// .toList();
+	//
+	// final long startTime = System.currentTimeMillis();
+	//
+	// List<Integer> result = observable.toBlocking().first();
+	//
+	// long elapsedTime = System.currentTimeMillis() - startTime;
+	//
+	// System.out.println("Prime number count: " + result.size());
+	// System.out.println("... computed in " + elapsedTime + " ms");
+	//
+	// // TODO Memory leak
+	// }
 
 	private List<Integer> getInitialData() {
 		List<Integer> result = new ArrayList<>();

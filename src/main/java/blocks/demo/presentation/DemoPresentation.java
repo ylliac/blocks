@@ -17,12 +17,38 @@ public class DemoPresentation {
 
 	public static void main(String[] args) {
 		DemoPresentation demo = new DemoPresentation();
-		 demo.sourceToGraph();
+		// demo.sourceToGraph();
 		// demo.sourceToThrottleToGraph();
 		// demo.sourceToBufferToGraph();
 		// demo.sourceToThrottleToQueueToGraph();
 		// demo.sourceToThrottleTo0MQToGraph();
-//		demo.sourceToWebSocketToHTML();
+		// demo.sourceToWebSocketToHTML();
+		demo.demo();
+	}
+
+	// Démo réelle
+	public void demo() {
+		RandomSource source = new RandomSource();
+		MessageEmitter<Float> emitterQuick = new MessageEmitter<>();
+		emitterQuick.setConnectionString("tcp://*:5556");
+		source.getOut().subscribe(emitterQuick.getIn());
+
+		MessageEmitter<Float> emitterSlow = new MessageEmitter<>();
+		emitterSlow.setConnectionString("tcp://*:5557");
+		source.getOut()// .throttleFirst(50, TimeUnit.MILLISECONDS)
+				.subscribe(emitterSlow.getIn());
+
+		WebSocketServerBlock webSocket = new WebSocketServerBlock();
+		webSocket.setAdress(8887);
+		source.getOut()// .throttleFirst(50, TimeUnit.MILLISECONDS)
+				.subscribe(webSocket.getIn());
+
+		DemoFrame frameQuick = new DemoFrame("Test");
+		MessageReceiver<Float> receiver = new MessageReceiver<>();
+		receiver.setConnectionString("tcp://localhost:5557");
+		receiver.getOut().throttleFirst(150, TimeUnit.MILLISECONDS)
+				.subscribe(frameQuick.getIn());
+		frameQuick.setVisible(true);
 	}
 
 	// Source simple affichage simple
@@ -32,8 +58,8 @@ public class DemoPresentation {
 		ConsoleBlock console = new ConsoleBlock();
 		DemoFrame frame = new DemoFrame("Test");
 
-//		source.getOut().subscribeOn(Schedulers.computation())
-//				.subscribe(console.getInMessage());
+		// source.getOut().subscribeOn(Schedulers.computation())
+		// .subscribe(console.getInMessage());
 		source.getOut().observeOn(SwingScheduler.getInstance())
 				.subscribe(frame.getIn());
 
@@ -139,13 +165,7 @@ public class DemoPresentation {
 		WebSocketServerBlock webSocket = new WebSocketServerBlock();
 		webSocket.setAdress(8887);
 
-		source.getOut()//.throttleFirst(300, TimeUnit.MILLISECONDS)
-		.map(new Func1<Float, String>() {
-			@Override
-			public String call(Float t1) {
-				return t1.toString();
-			}
-		}).subscribe(webSocket.getIn());
+		source.getOut().subscribe(webSocket.getIn());
 	}
 
 	// TODO Ca commence à faire un peu fouilli, on pourrait pas utiliser un DSL

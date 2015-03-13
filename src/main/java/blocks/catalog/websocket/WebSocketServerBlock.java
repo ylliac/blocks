@@ -1,5 +1,7 @@
 package blocks.catalog.websocket;
 
+import java.util.Objects;
+
 import rx.Observable;
 import rx.observers.EmptyObserver;
 import rx.subjects.PublishSubject;
@@ -17,17 +19,17 @@ public class WebSocketServerBlock extends BlockSupport {
 		server = new WSServer(port);
 		server.start();
 
-		in.subscribe(new EmptyObserver<String>() {
+		in.subscribe(new EmptyObserver<Object>() {
 			@Override
-			public void onNext(String data) {
-				server.sendToAll(data);
+			public void onNext(Object data) {
+				server.sendToAll(Objects.toString(data));
 			}
 		});
 
 		server.getOut().subscribe(out);
 	}
 
-	public PublishSubject<String> getIn() {
+	public PublishSubject<Object> getIn() {
 		return in;
 	}
 
@@ -35,7 +37,7 @@ public class WebSocketServerBlock extends BlockSupport {
 		return out;
 	}
 
-	private PublishSubject<String> in;
+	private PublishSubject<Object> in;
 
 	private PublishSubject<String> out;
 
